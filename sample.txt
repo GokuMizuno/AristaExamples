@@ -1,0 +1,10 @@
+192.168.1.1: SAX2V1R.lan.
+192.168.1.15: MyCloud-15KHDP.lan.
+192.168.1.29: gordon-GS63VR-6RF.lan.
+192.168.1.80: XBOX.lan.
+192.168.1.127: LAPTOP-TSDO3TEE.lan.
+192.168.1.133: HPC37255.lan.
+192.168.1.155: MyCloud-1ASDUL.lan.
+192.168.1.160: MSI.lan.
+192.168.1.201: RingDoorbell-6e.lan.
+192.168.1.252: iPhone.lan.
