@@ -70,7 +70,6 @@ def main():
             if resolved:
                 retVals[ip] = resolved
 
-    print(retVals)
     writeFile(retVals, "./sample_mult.txt")
 
 if __name__ == "__main__":
