@@ -1,9 +1,13 @@
 A quick demo for Nautobot plugin that interacts with AWS, Azure, and gcp secrets manager.
 
 Please note, this is
+
 A> Not completed
+
 B> Not tested
+
 C> Not in classes
+
 D> Does not deal with authentication
 
 Please note:
