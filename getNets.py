@@ -1,12 +1,14 @@
 import platform
 import subprocess
 
-def writeFile(netList:dict, fileName:str) -> None:
+
+def writeFile(netList: dict, fileName: str) -> None:
     with open(fileName, "w", encoding="utf-8") as f:
         for k in netList:
             f.write(f"{k}: {netList[k]}\n")
 
-def readFile(fileName:str) -> dict:
+
+def readFile(fileName: str) -> dict:
     ldict = {}
     with open(fileName, 'r', encoding="utf-8") as f:
         for line in f:
@@ -14,7 +16,8 @@ def readFile(fileName:str) -> dict:
             ldict[key] = value
     return ldict
 
-def getNetworkIP(ip:str, flag:bool) -> dict:
+
+def getNetworkIP(ip: str, flag: bool) -> dict:
     v = ""
     # Linux
     if flag:
@@ -42,7 +45,7 @@ def getNetworkIP(ip:str, flag:bool) -> dict:
         except (subprocess.CalledProcessError, TimeoutError, subprocess.TimeoutExpired):
             v = ""
 
-    return {ip:v}
+    return {ip: v}
 
 
 def main():
@@ -64,6 +67,7 @@ def main():
     # filter the empty space
     retVals = {k: v for k, v in retVals.items() if v != ""}
     writeFile(retVals, "./sample.txt")
+
 
 if __name__ == "__main__":
     main()
