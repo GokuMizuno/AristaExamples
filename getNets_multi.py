@@ -2,10 +2,12 @@ import platform
 import subprocess
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+
 def writeFile(netList: dict, fileName: str) -> None:
     with open(fileName, "w", encoding="utf-8") as f:
         for k in netList:
             f.write(f"{k}: {netList[k]}\n")
+
 
 def readFile(fileName: str) -> dict:
     ldict = {}
@@ -14,6 +16,7 @@ def readFile(fileName: str) -> dict:
             key, value = line.strip().split(":", 1)
             ldict[key] = value
     return ldict
+
 
 def getNetworkIP(ip: str, flag: bool) -> tuple:
     v = ""
@@ -57,6 +60,7 @@ def getNetworkIP(ip: str, flag: bool) -> tuple:
 
     return ip, v
 
+
 def main():
     flag = platform.system().startswith("Linux")
     ip_prefix = "192.168.1."
@@ -70,8 +74,8 @@ def main():
             if resolved:
                 retVals[ip] = resolved
 
-    print(retVals)
     writeFile(retVals, "./sample_mult.txt")
+
 
 if __name__ == "__main__":
     main()

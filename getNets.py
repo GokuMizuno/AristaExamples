@@ -1,12 +1,14 @@
 import platform
 import subprocess
 
-def writeFile(netList:dict, fileName:str) -> None:
+
+def writeFile(netList: dict, fileName: str) -> None:
     with open(fileName, "w", encoding="utf-8") as f:
         for k in netList:
             f.write(f"{k}: {netList[k]}\n")
 
-def readFile(fileName:str) -> dict:
+
+def readFile(fileName: str) -> dict:
     ldict = {}
     with open(fileName, 'r', encoding="utf-8") as f:
         for line in f:
@@ -14,7 +16,8 @@ def readFile(fileName:str) -> dict:
             ldict[key] = value
     return ldict
 
-def getNetworkIP(ip:str, flag:bool) -> dict:
+
+def getNetworkIP(ip: str, flag: bool) -> dict:
     v = ""
     # Linux
     if flag:
@@ -42,7 +45,7 @@ def getNetworkIP(ip:str, flag:bool) -> dict:
         except (subprocess.CalledProcessError, TimeoutError, subprocess.TimeoutExpired):
             v = ""
 
-    return {ip:v}
+    return {ip: v}
 
 
 def main():
@@ -55,7 +58,6 @@ def main():
 
     # We set up a dict that has key/value s.t. ip == key, returned == value
     retVals = {}
-    # set up multithreading, and go through the IP range
     ip = "192.168.1."
     for i in range(0, 255):
         k = ip + str(i)
@@ -64,21 +66,8 @@ def main():
 
     # filter the empty space
     retVals = {k: v for k, v in retVals.items() if v != ""}
-    print(retVals)
     writeFile(retVals, "./sample.txt")
-    # backupIPs = doGetBackupIPs()
-    # ciscoIPs = [key for key, value in retVals.items() if str(value).__contains__("Cisco")]
-    # for ip in ciscoIPs:
-    #     if len(backupIPs) == 0:
-    #         doCiscoBackup(ip)
-    #         # finish this
-    # buffaloIPs = [key for key, value in retVals.items() if str(value).__contains__("Buffalo")]
-    # for ip in buffaloIPs:
-    #     print(f"{ip} needs to be upgraded")
-    # # double check this
-    # aristaIPs = [key for key, value in retVals.items() if str(value).__contains__("Arista")]
-    # for ip in aristaIPs:
-    #     doAristaBackup(ip)
+
 
 if __name__ == "__main__":
     main()

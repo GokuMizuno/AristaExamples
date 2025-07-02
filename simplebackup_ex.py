@@ -6,10 +6,10 @@ def getLoginInfo():
     # here, we just pass a pretend uname/pwd
     return "ExampleName", "ExamplePwd"
 
-def doAristaBackup(ip1:str, ip2:str=""):
+
+def doAristaBackup(ip1: str, ip2: str = ""):
     # I don't have an arista device, so I cannot test this
     import pyeapi
-    import json
 
     # --- Configuration ---
     SOURCE_SWITCH_IP = ip1
@@ -30,7 +30,7 @@ def doAristaBackup(ip1:str, ip2:str=""):
         )
         print(f"Successfully connected to source switch: {SOURCE_SWITCH_IP}")
     except pyeapi.eapilib.eapi.EapiError as e:
-        print(f"Error connecting to source switch: {e}")
+        print(f"Error connecting to source switch: {str(e)}")
         exit()
 
     # --- Get Running Configuration from Source Switch ---
@@ -39,7 +39,7 @@ def doAristaBackup(ip1:str, ip2:str=""):
         running_config = response[0]['output']
         print("Successfully retrieved running configuration from source switch.")
     except pyeapi.eapilib.eapi.EapiError as e:
-        print(f"Error retrieving configuration from source switch: {e}")
+        print(f"Error retrieving configuration from source switch: {str(e)}")
         exit()
 
     # --- Connect to Destination Switch ---
@@ -52,7 +52,7 @@ def doAristaBackup(ip1:str, ip2:str=""):
         )
         print(f"Successfully connected to destination switch: {DESTINATION_SWITCH_IP}")
     except pyeapi.eapilib.eapi.EapiError as e:
-        print(f"Error connecting to destination switch: {e}")
+        print(f"Error connecting to destination switch: {str(e)}")
         exit()
 
     # --- Apply Configuration to Destination Switch ---
@@ -62,12 +62,13 @@ def doAristaBackup(ip1:str, ip2:str=""):
         destination_node.config(config_commands)
         print("Successfully applied configuration to destination switch.")
     except pyeapi.eapilib.eapi.EapiError as e:
-        print(f"Error applying configuration to destination switch: {e}")
+        print(f"Error applying configuration to destination switch: {str(e)}")
         exit()
 
     print("Backup and transfer process completed.")
 
-def doCiscoBackup(ip1:str, ip2:str=""):
+
+def doCiscoBackup(ip1: str, ip2: str = ""):
     from netmiko import ConnectHandler
 
     uname, pwd = getLoginInfo()
@@ -96,7 +97,7 @@ def doCiscoBackup(ip1:str, ip2:str=""):
                 # "secret": "YOUR_ENABLE_SECRET",
             }
             net_connect_dest = ConnectHandler(**device_dest)
-            copy_command = f"copy running-config tftp://TFTP_SERVER_IP/config_backup.txt" # Example for TFTP
+            copy_command = "copy running-config tftp://TFTP_SERVER_IP/config_backup.txt"  # Example for TFTP
             net_connect_dest.send_command_timing(copy_command)
             # Handle prompts for filename, address, etc.
             net_connect_dest.disconnect()
@@ -106,10 +107,10 @@ def doCiscoBackup(ip1:str, ip2:str=""):
             net_connect_dest.send_command("configure terminal")
             config_lines = output.splitlines()
             for line in config_lines:
-                if line.strip() and not line.startswith("!"): # Exclude comments and empty lines
+                if line.strip() and not line.startswith("!"):  # Exclude comments and empty lines
                     net_connect_dest.send_command(line)
             net_connect_dest.send_command("end")
-            net_connect_dest.send_command("write memory") # Save configuration
+            net_connect_dest.send_command("write memory")  # Save configuration
             net_connect_dest.disconnect()
     else:
         ipFilename = str(ip1) + "_config.cfg"
@@ -117,14 +118,16 @@ def doCiscoBackup(ip1:str, ip2:str=""):
             f.write(output)
     # log and return success?
 
+
 def doGetBackupIPs() -> list:
     # here we would get the list of IPs we are backing up our current machines to
     # this could be done via mac address, IP address, or some other method I don't know about
     # since I am mocking this, I'll just return []
     return []
 
+
 def main():
-    oldIPsfile = "" # put the file name here, or call from args.  TODO: finish this
+    oldIPsfile = ""  # put the file name here, or call from args.  TODO: finish this
     oldDeviceIPs = []
     backupIPs = doGetBackupIPs()
     # Presuming the line is of the form {IP}, {Device name}
@@ -147,6 +150,7 @@ def main():
     for ip1, ip2 in zip(aristaIPs, backupIPs):
         doAristaBackup(ip)
     backupIPs = backupIPs[len(aristaIPs):]
+
 
 if __name__ == "__main__":
     main()
