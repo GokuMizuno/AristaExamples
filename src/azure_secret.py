@@ -119,10 +119,11 @@ def delete_azure_secret(key_vault_url: str, secret_name: str) -> None:
         # If soft-delete is enabled, the secret will be in a "deleted" state
         # and can be recovered. Otherwise, it's permanently deleted.
         poller = client.begin_delete_secret(secret_name)
-        deleted_secret = poller.wait() # Wait for the deletion operation to complete
+        deleted_secret = poller.wait()  # Wait for the deletion operation to complete
 
-        print(f"Secret '{secret_name}' deleted (or marked for deletion).")
-        # If soft-delete is enabled, deleted_secret.id will contain the ID of the deleted secret.
+        if deleted_secret:
+            print(f"Secret '{secret_name}' deleted (or marked for deletion).")
+            # If soft-delete is enabled, deleted_secret.id will contain the ID of the deleted secret.
 
     except ResourceNotFoundError:
         print(f"Error: Secret '{secret_name}' not found for deletion in Key Vault '{key_vault_url}'.")
