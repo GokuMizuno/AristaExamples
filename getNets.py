@@ -3,12 +3,37 @@ import subprocess
 
 
 def writeFile(netList: dict, fileName: str) -> None:
+    '''
+    Writes data to a text file
+
+    Args:
+        netList (dict):  A dictionary of IP: name of object
+        fileName (str):  the full path to the file
+
+    Returns:
+        Nothing
+
+    Raises:
+        Nothing
+    '''
     with open(fileName, "w", encoding="utf-8") as f:
         for k in netList:
             f.write(f"{k}: {netList[k]}\n")
 
 
 def readFile(fileName: str) -> dict:
+    """
+    Reads data into a dictionary from a file
+
+    Args:
+        fileName (str):  the path to the file
+
+    Returns:
+        A dictionary {IP: name}
+
+    Raises:
+        Nothing
+    """
     ldict = {}
     with open(fileName, 'r', encoding="utf-8") as f:
         for line in f:
@@ -17,22 +42,34 @@ def readFile(fileName: str) -> dict:
     return ldict
 
 
-def getNetworkIP(ip: str, flag: bool) -> dict:
+def getNetworkIP(ip: str, flag: bool) -> tuple:
+    """
+    Tests all network IPs on my local 192.168.1 subnet
+
+    Args:
+        ip (str):  the IP address to test
+        flag (bool): use the Linux or Windows commands
+
+    Returns:
+        tuple (str, str): (ip address), name, or blank string
+
+    Raises:
+        Exception if any errors are raised
+    """
     v = ""
-    # Linux
+    # Linux, uses host
     if flag:
         try:
             cmd = f"host {ip}"
             output = subprocess.run([cmd], shell=True, timeout=3, check=True, capture_output=True, encoding="utf-8")
             output = output.stdout.split('\n')
-            if output[0].__contains__("not found"):
+            if "not found" in output[0]:
                 v = ""
             else:
                 v = output[0].split()[-1]
         except (subprocess.CalledProcessError, TimeoutError, subprocess.TimeoutExpired):
-            # print(f"{e.returncode}, {e.output}, {e.stderr}, {e.stdout}, {str(e)}")
             v = ""
-    # Windows
+    # Windows, uses nslookup
     else:
         try:
             cmd = f"nslookup {ip}"
@@ -45,7 +82,7 @@ def getNetworkIP(ip: str, flag: bool) -> dict:
         except (subprocess.CalledProcessError, TimeoutError, subprocess.TimeoutExpired):
             v = ""
 
-    return {ip: v}
+    return ip, v
 
 
 def main():
@@ -56,16 +93,14 @@ def main():
     if name.startswith("Linux"):
         flag = True
 
-    # We set up a dict that has key/value s.t. ip == key, returned == value
     retVals = {}
     ip = "192.168.1."
     for i in range(0, 255):
         k = ip + str(i)
-        v = getNetworkIP(k, flag)
-        retVals[k] = v[k]
-
-    # filter the empty space
-    retVals = {k: v for k, v in retVals.items() if v != ""}
+        fullip, v = getNetworkIP(k, flag)
+        # filter the empty space
+        if v:
+            retVals[fullip] = v
     writeFile(retVals, "./sample.txt")
 
 
