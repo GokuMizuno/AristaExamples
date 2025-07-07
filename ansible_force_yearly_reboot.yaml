@@ -1,0 +1,25 @@
+---
+- name: Check uptime and reboot if necessary
+  hosts: all
+  become: true  # Requires root privileges for uptime and reboot
+  tasks:
+    - name: Gather system facts
+      setup:
+
+    - name: Get uptime in seconds
+      shell: "awk '{print $1}' /proc/uptime"
+      register: uptime_output
+      changed_when: false
+
+    - name: Calculate uptime in days
+      set_fact:
+        uptime_days: "{{ (uptime_output.stdout | float) / 86400 }}"
+
+    - name: Debug uptime in days
+      debug:
+        msg: "Uptime: {{ uptime_days }} days"
+
+    - name: Reboot if uptime is greater than or equal to 365 days
+      reboot:
+        msg: "Rebooting due to uptime > 1 year"
+      when: uptime_days | int >= 365

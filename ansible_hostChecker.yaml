@@ -1,0 +1,25 @@
+- name: Check host, get OS version, and apply updates
+  hosts: all  # Or a specific group
+  gather_facts: true  # Gather facts to get OS information
+
+  tasks:
+    - name: Ping host to check connectivity
+      ansible.builtin.ping:
+
+    - name: Display OS distribution and version
+      debug:
+        msg: "OS Distribution: {{ ansible_distribution }}, OS Version: {{ ansible_distribution_major_version }}"
+
+    - name: Apply updates (Ubuntu)
+      ansible.builtin.apt:
+        update_cache: yes
+        upgrade: dist
+      when: ansible_distribution == "Ubuntu"  # Apply only to Ubuntu hosts
+
+    - name: Apply updates (Red Hat)
+      ansible.builtin.yum:
+        name: "*"
+        state: latest
+      when: ansible_distribution in ["CentOS", "RedHat"]  # Apply to Red Hat and CentOS hosts
+
+
