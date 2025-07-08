@@ -14,22 +14,6 @@ class GoogleBase():
         self.service_account_key_path = ""
         self.GOOGLE_APPLICATION_CREDENTIALS = {}
 
-    def getVMList(self, *args) -> list:
-        """
-        This gets all the VMs associated with a given GCP account
-
-        Args:
-            unk (unk)
-
-        Returns:
-            unk (unk)
-
-        Raises:
-            Exception if something goes wrong
-        """
-        # We use the gcp specific endpoints to get all VMs and statuses
-        pass
-
     def gcp_login(self, project_id: str = None, service_account_key_path: str = None):
         """
         Authenticates with Google Cloud Platform and demonstrates access to a service.

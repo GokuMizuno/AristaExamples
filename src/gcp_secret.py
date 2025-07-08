@@ -4,7 +4,7 @@ from google.cloud import secretmanager
 
 class GCPSecret():
     def __init__(self):
-        pass
+        super().__init__()
 
     def create_gcp_secret(self, project_id: str, secret_id: str, secret_value: str) -> str:
         """
